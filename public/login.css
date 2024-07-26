@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .form-control {
   margin: 20px;
   background-color: #ffffff;
@@ -17,10 +18,12 @@
   padding: 25px;
   border-radius: 8px;
 }
+
 .title {
   font-size: 28px;
   font-weight: 800;
 }
+
 .input-field {
   position: relative;
   width: 100%;
@@ -50,8 +53,9 @@
   pointer-events: none;
   z-index: 2;
 }
-.input-field .input:focus ~ .label,
-.input-field .input:valid ~ .label {
+
+.input-field .input:focus~.label,
+.input-field .input:valid~.label {
   top: 5px;
   left: 5px;
   font-size: 12px;
@@ -60,6 +64,7 @@
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .submit-btn {
   margin-top: 30px;
   height: 55px;

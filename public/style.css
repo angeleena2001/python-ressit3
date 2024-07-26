@@ -31,6 +31,7 @@ li {
 
 .list li {
     padding-top: 8px;
+
 }
 
 .list button {
@@ -221,9 +222,106 @@ footer p {
     text-align: center;
     margin: 10px 10px;
 }
-.remove{
+
+.remove {
     display: none;
 }
-.show{
+
+.show {
     display: inline;
+}
+
+.list a {
+    color: white;
+}
+
+.pricing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 50px 0px;
+    /* align-items: center; */
+
+}
+
+.pricing p {
+    text-align: center;
+    font-weight: 900;
+}
+
+.pricing h1 {
+    text-align: center;
+}
+
+.pricing_details {
+    display: flex;
+    justify-content: space-around;
+    margin: 32px 0px;
+}
+
+.pricing_details p {
+    font-weight: 500;
+}
+
+.pricing_name {
+    font-size: 32px;
+
+}
+
+/* admin panel styling */
+
+.users h2 {
+    margin: 0px 90px;
+}
+
+.userList {
+    gap: 28px;
+    line-height: 40px;
+    margin: 0px 90px;
+}
+
+.member {
+    background-color: #161616;
+    margin: 0px 0px;
+    padding: 0px 80px;
+}
+
+#logout-btn {
+    background-color: #ed563b;
+    color: white;
+    padding: 12px 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.testimonials {
+    margin: 0px 90px;
+}
+
+.testimonial_form form {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    gap: 20px;
+}
+
+.testimonial_form form ::placeholder {
+    text-align: center;
+}
+
+#testimonialList {
+    gap: 30px;
+    line-height: 30px;
+}
+
+.membership {
+    margin: 0px 90px;
+}
+
+.membership form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 20px;
 }

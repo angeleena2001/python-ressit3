@@ -4,36 +4,37 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/fireba
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBKEZiWN-bNvSi17uaT4WkSetCEeg_tBe0",
-    authDomain: "assignment-c2aa3.firebaseapp.com",
-    projectId: "assignment-c2aa3",
-    storageBucket: "assignment-c2aa3.appspot.com",
-    messagingSenderId: "345611445983",
-    appId: "1:345611445983:web:c917280d6e06796a6aeb6a"
+    apiKey: "AIzaSyA6nx5fzCrJIpiiSD6TKRSAAnScDD1yqEM",
+    authDomain: "python-assignmnent.firebaseapp.com",
+    projectId: "python-assignmnent",
+    storageBucket: "python-assignmnent.appspot.com",
+    messagingSenderId: "558421886844",
+    appId: "1:558421886844:web:eddd220b9b0608665d46f9",
+    measurementId: "G-YRBVXF7KXS"
 };
 
 
-window.addEventListener("load", function(){
+window.addEventListener("load", function () {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    document.getElementById("signup-btn").addEventListener("click", function(){
+    document.getElementById("signup-btn").addEventListener("click", function () {
 
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
         createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+            .then((userCredential) => {
 
-            const user = userCredential.user;
-            console.log("User has been created");
+                const user = userCredential.user;
+                console.log("User has been created");
 
-            user.getIdToken().then((token) => {
+                user.getIdToken().then((token) => {
                     document.cookie = "token=" + token + ";path=/;SameSite=Strict";
                     window.location = "/";
+                });
+            })
+            .catch((error) => {
+                console.log(error.code, error.message);
             });
-        })
-        .catch((error) => {
-            console.log(error.code, error.message);
-        });
     });
 });

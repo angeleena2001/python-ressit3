@@ -20,6 +20,8 @@ firestore_db = firestore.Client()
 firebase_request_adapter = requests.Request()
 
 
+
+
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     id_token = request.cookies.get("token")
@@ -34,43 +36,49 @@ async def root(request: Request):
             {
                 "request": request,
                 "user_token": None,
-                "testimonials" : testimonials,
-                "subscriptions" : subscriptions
+                "testimonials": testimonials,
+                "subscriptions": subscriptions
             },
         )
     
     user = createUser(user_token)
 
-    if user.get("isblocked") :
+    if user.get("isblocked"):
         return templets.TemplateResponse(
             "blocked.html",
-            {   "request": request,
+            {
+                "request": request,
                 "user_token": user_token,
             }
         )
 
+    # Determine the user email and pass it to the template
+    user_email = user.get("email")
 
     if user_token['email'] == constants.admin:
         users = firestore_db.collection("users").get()
         return templets.TemplateResponse(
             "admin.html",
-            {   "request": request,
+            {
+                "request": request,
                 "user_token": user_token,
-                "users" : users,
-                "testimonials" : testimonials,
-                "subscriptions" : subscriptions
+                "users": users,
+                "testimonials": testimonials,
+                "subscriptions": subscriptions,
+                "user_email": user_email  # Pass user email
             }
-    )
+        )
 
     return templets.TemplateResponse(
         "index.html",
-        {   "request": request,
+        {
+            "request": request,
             "user_token": user_token,
-            "testimonials" : testimonials,
-            "subscriptions" : subscriptions
+            "testimonials": testimonials,
+            "subscriptions": subscriptions,
+            "user_email": user_email  # Pass user email
         }
     )
-
 
 def validateFirebaseToken(id_token):
     if not id_token:
@@ -80,24 +88,41 @@ def validateFirebaseToken(id_token):
         user_token = google.oauth2.id_token.verify_firebase_token(
             id_token, firebase_request_adapter
         )
+        print(f"User Token: {user_token}")  
+        # ABOVE LINE IS ADDED
     except ValueError as err:
         print(str(err))
     return user_token
 
 
+# def createUser(user_token):
+#     user = firestore_db.collection("users").document(user_token["user_id"]).get()
+#     if not user.exists:
+#         firestore_db.collection("users").document(user_token["user_id"]).create(
+#             {
+#                 "id": user_token["user_id"],
+#                 "email": user_token["email"],
+#                 "isblocked": False
+#             }
+#         )
+#         user = firestore_db.collection("users").document(user_token["user_id"]).get()
+#     return user
 def createUser(user_token):
-    user = firestore_db.collection("users").document(user_token["user_id"]).get()
-    if not user.exists:
-        firestore_db.collection("users").document(user_token["user_id"]).create(
-            {
-                "id": user_token["user_id"],
-                "email": user_token["email"],
-                "isblocked": False
-            }
-        )
-        user = firestore_db.collection("users").document(user_token["user_id"]).get()
-    return user
+    user_doc = firestore_db.collection("users").document(user_token["user_id"])
+    user = user_doc.get()
 
+    if not user.exists:
+        user_data = {
+            "id": user_token["user_id"],
+            "email": user_token["email"],
+            "isblocked": False
+        }
+        user_doc.set(user_data)
+        user = user_doc.get()
+
+    user_data = user.to_dict()
+    print(f"User Data: {user_data}")  # Debugging line to ensure the user has email
+    return user_data
 
 @app.get("/login", response_class=HTMLResponse)
 def login( req:Request ):
@@ -115,7 +140,8 @@ def login( req:Request ):
             },
         )
     
-    return RedirectResponse("/")
+    # return RedirectResponse("/")
+        return RedirectResponse("/", headers={"user_email": user_token.get("email")})
 
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -134,7 +160,9 @@ def signup( req:Request ):
             },
         )
     
-    return RedirectResponse("/")
+    # return RedirectResponse("/")
+        return RedirectResponse("/", headers={"user_email": user_token.get("email")})
+
 
 
 @app.post("/add-testimonial", response_class=RedirectResponse)
@@ -244,6 +272,12 @@ async def unblock( req: Request, id:str ):
 
     return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
 
-
-
+@app.get('/subscription',response_class=HTMLResponse)
+async def subscription(req: Request):
+    subscriptions = firestore_db.collection("subscriptions").get()
+    return templets.TemplateResponse("subscription.html",{
+       "request": req,
+      "subscriptions":subscriptions
+    })
+ 
 # $Env:GOOGLE_APPLICATION_CREDENTIALS="key.json"
